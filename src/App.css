@@ -1,3 +1,16 @@
 .App {
-  text-align: center;
+    text-align: center;
+}
+
+.linkText {
+    cursor: pointer;
+    color: rgba(0, 0, 0, .65);
+}
+
+.linkText:hover {
+    color: #000;
+}
+
+li {
+    list-style-type: none;
 }

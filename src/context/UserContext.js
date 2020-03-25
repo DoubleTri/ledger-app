@@ -6,33 +6,48 @@ export const AuthContext = React.createContext();
 export const AuthProvider = ({ children }) => {
 
     const [currentUser, setCurrentUser] = useState(null);
+    const [userInfo, setUserInfo] = useState(null)
+    const [teamName, setTeamName] = useState(null)
+
 
     useEffect(() => {
         auth.onAuthStateChanged(setCurrentUser)
-        console.log(auth.currentUser);
     }, []);
 
     useEffect(() => {
-        console.log(auth.currentUser);
+
         if (currentUser) {
-            
-            fireStore.collection("users").where("uid", "array-contains", currentUser.uid).onSnapshot((snap) => {
-        
+            fireStore.collection("Teams").where("uids", "array-contains", currentUser.uid).onSnapshot((snap) => {
+                setTeamName(snap.docs[0].data().teamName)
+                snap.docs[0].data().members.map((member) => {
+                    if (Object.values(member)[0].uid === currentUser.uid) {
+                        setUserInfo(Object.values(member)[0])
+                    }
+                })
             })            
         }
+
         if (!currentUser) {
             setCurrentUser(null)
         }
+        
     }, [currentUser]);
+
 
     let logout = () => {
         auth.signOut();
+        setTeamName(null)
+        setUserInfo(null)
+        setCurrentUser(null)
     }
+
 
     return (
         <AuthContext.Provider
             value={{
                 currentUser,
+                userInfo,
+                teamName,
                 logout
             }}
         >

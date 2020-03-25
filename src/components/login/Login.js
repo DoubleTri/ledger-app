@@ -1,19 +1,19 @@
 import React, { useState, useContext } from 'react';
 // import { Link } from 'react-router-dom'
 import { auth } from '../../firebase';
-import { Form, Input, Button, Checkbox } from 'antd';
+import { Form, Input, Button, Checkbox, Col } from 'antd';
 
 import { AuthContext } from '../../context/UserContext';
 
 const Login = () => {
 
+    const [loading, setLoading] = useState(false)
     const [show, setShow] = useState(false)
 
-    let { logout } = useContext(AuthContext)
-
     const handleSubmit = (values) => {
-        const promise = auth.signInWithEmailAndPassword(values.email, values.password);
-        promise.catch(e => e ? alert(e.message) : null);
+        setLoading(true)
+        const promise = auth.signInWithEmailAndPassword(values.email, values.password).then(() => setLoading(false))
+        promise.catch(e => e ? [alert(e.message), setLoading(false)] : null)
     }
 
     const onFinishFailed = (errorInfo) => {
@@ -36,40 +36,37 @@ const Login = () => {
     // }
 
   return (
-    <Form
-      name="basic"
-      onFinish={handleSubmit}
-      onFinishFailed={onFinishFailed}
-    >
-      <Form.Item
-        label="Email"
-        name="email"
-        rules={[{ required: true, message: 'Please input your email' }]}
-      >
-        <Input />
-      </Form.Item>
+      <Col style={{ marginTop: '10em' }} span={12} offset={6}>
+          <Form
+              name="basic"
+              onFinish={handleSubmit}
+              onFinishFailed={onFinishFailed}
+              hideRequiredMark={true}
+          >
+              <Form.Item
+                  label="Email"
+                  name="email"
+                  rules={[{ required: true, message: 'Please input your email' }]}
+              >
+                  <Input />
+              </Form.Item>
 
-      <Form.Item
-        label="Password"
-        name="password"
-        rules={[{ required: true, message: 'Please input your password' }]}
-      >
-        <Input.Password />
-      </Form.Item>
+              <Form.Item
+                  label="Password"
+                  name="password"
+                  rules={[{ required: true, message: 'Please input your password' }]}
+              >
+                  <Input.Password />
+              </Form.Item>
 
-      <Form.Item >
-        <Button type="primary" htmlType="submit">
-          Submit
-        </Button>
-      </Form.Item>
+              <Form.Item >
+                  <Button type="primary" loading={loading} htmlType="submit">
+                      Submit
+                    </Button>
+              </Form.Item>
 
-      <Form.Item >
-        <Button type="primary" onClick={logout}>
-          Logout
-        </Button>
-      </Form.Item>
-
-    </Form>
+          </Form>
+      </Col>
 
   );
 };

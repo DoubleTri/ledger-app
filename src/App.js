@@ -5,11 +5,15 @@ import {
     Switch,
 } from "react-router-dom";
 import { auth } from './firebase';
-import { PrivateRoute, NoUserRoute } from './routes/Routes';
+import { AuthProvider } from './context/UserContext';
+import { PrivateRoute, NoUserRoute, AdminRoute } from './routes/Routes';
+import './App.css';
+
+import Header from './components/header/Header';
 import Login from './components/login/Login'
 import Home from './components/home/Home'
-import { AuthProvider } from './context/UserContext';
-import './App.css';
+import AdminOptions from './components/adminOptions/AdminOptions';
+import FourZeroFour from './components/fourZeroFour/FourZeroFour';
 
 function App() {
 
@@ -25,12 +29,15 @@ function App() {
         <div className="App">
             <AuthProvider>
                 <Router>
-                {loading ? "Loading...." :
-                    <Switch >
-                        <PrivateRoute exact path="/" component={Home} />
-                        <NoUserRoute path="/login" component={Login} />
-                    </Switch>
-                }
+                    <Header />
+                    {loading ? "Loading...." :
+                        <Switch >
+                            <PrivateRoute exact path="/" component={Home} />
+                            <NoUserRoute path="/login" component={Login} />
+                            <PrivateRoute path="/admin-options" component={AdminOptions} />
+                            <Route render={(props) => <FourZeroFour {...props} />} />
+                        </Switch>
+                    }
                 </Router>
             </AuthProvider>
         </div>
