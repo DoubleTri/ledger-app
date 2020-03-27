@@ -32,6 +32,7 @@ const NewTeamMember = (props) => {
               onFinish={handleSubmit}
               onFinishFailed={onFinishFailed}
               hideRequiredMark={true}
+              form={form}
           >
               <Form.Item
                   label="Name"
@@ -57,7 +58,7 @@ const NewTeamMember = (props) => {
                   <Input />
               </Form.Item>
 
-              <Form.Item label="Admin" name="admin" >
+              <Form.Item label="Admin" name="admin" valuePropName="checked">
                   <Switch />
               </Form.Item>
 

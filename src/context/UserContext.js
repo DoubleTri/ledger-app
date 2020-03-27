@@ -19,9 +19,9 @@ export const AuthProvider = ({ children }) => {
         if (currentUser) {
             fireStore.collection("Teams").where("uids", "array-contains", currentUser.uid).onSnapshot((snap) => {
                 setTeamName(snap.docs[0].data().teamName)
-                snap.docs[0].data().members.map((member) => {
-                    if (Object.values(member)[0].uid === currentUser.uid) {
-                        setUserInfo(Object.values(member)[0])
+                Object.values(snap.docs[0].data().members).map((member) => {
+                    if (member.uid === currentUser.uid) {
+                        setUserInfo((member))
                     }
                 })
             })            

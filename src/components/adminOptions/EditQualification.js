@@ -57,35 +57,49 @@ const NewQualification = (props) => {
 
     }, [props])
 
-    const handleSubmit = (values) => {
-console.log(props);
+    const handleSubmit = async (values) => {
+
         if (optionsArr) {
             let itemArr = []
             optionsArr.map((item) => {
-                console.log(item);
                 itemArr.push(item.name)
             })
             values["options"] = itemArr
+            values["uid"] = props.qualItem.uid
         }
         if (selectValue === 1) {
-            values = {qualification: values.qualification}
+            values = {qualification: values.qualification, uid: props.qualItem.uid}
         }
 
         let newQualifications = null;
 
-        fireStore.collection("Teams").doc(teamName).get().then((doc) => {
+        await fireStore.collection("Teams").doc(teamName).get().then((doc) => {
             let oldQualifications = doc.data().qualifications
             let editedQual = oldQualifications.indexOf(oldQualifications.find(o => o.uid === props.qualItem.uid))
             oldQualifications[editedQual] = values
             newQualifications = oldQualifications;
         }).then(() => {
-            fireStore.collection("Teams").doc(teamName).update({
+            fireStore.collection("Teams").doc(teamName).set({
                 qualifications: newQualifications
-            })
+            }, {merge: true})
             props.close()
         })
 
+        fireStore.collection("Teams").doc(teamName).get().then((doc) => {
+            let updatedIndex = newQualifications.indexOf(newQualifications.find(o => o.uid === props.qualItem.uid))
+            
+            Object.entries(doc.data().members).map((item) => {
 
+                item[1][props.qualItem.uid] = newQualifications.indexOf(newQualifications.find(o => o.uid === props.qualItem.uid))
+                let path = 'members.' + item[1].uid + '.' + props.qualItem.uid
+                fireStore.collection("Teams").doc(teamName).update({
+                    [path]: {
+                        [newQualifications[updatedIndex].qualification]: null
+                    }
+                })
+            })
+
+        })
     }
 
     const onFinishFailed = (errorInfo) => {

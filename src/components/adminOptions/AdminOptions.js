@@ -28,7 +28,7 @@ const AdminOptions = () => {
         if (teamName) {
         fireStore.collection("Teams").doc(teamName).onSnapshot(function(doc) {
             setQualArr(doc.data().qualifications)
-            setTeamMemberArr(doc.data().members)
+            setTeamMemberArr(Object.values(doc.data().members))
         })
     }
     }, [teamName])
@@ -77,7 +77,7 @@ const AdminOptions = () => {
                 teamMemberArr.map((item, k) => {
                     return <li key={k} style={{ margin: '1em' }}>
                         <Row>
-                            <Col span={7}>{Object.keys(item)[0]}</Col>
+                            <Col span={7}>{item.name}</Col>
                             <Col span={3}><EditOutlined onClick={() => editQualification(item)} /></Col>
                         </Row>
                     </li>
@@ -135,3 +135,13 @@ const AdminOptions = () => {
 };
 
 export default AdminOptions; 
+
+/* TODO 
+
+DONE!!  When qual is created, update all members
+DONE!!  When qual is edited, update all members
+DONE!!  When member is created, he's populated with current qual list
+Admin can edit individual members
+Members can edit themselves
+
+*/

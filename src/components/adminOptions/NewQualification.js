@@ -4,7 +4,11 @@ import { fireStore } from '../../firebase';
 import { Form, Input, Button, Radio, Col } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 
+import RandomId from '../../functions/RandomId';
 import { AuthContext } from '../../context/UserContext';
+
+var len = 10;
+var pattern = 'aA0'
 
 const formItemLayout = {
     labelCol: {
@@ -26,18 +30,33 @@ const formItemLayoutWithOutLabel = {
 const NewQualification = (props) => {
 
     const [form] = Form.useForm();
+    let id = RandomId(len, pattern);
 
     let { teamName } = useContext(AuthContext)
 
     const [selectValue, setSelectValue] = useState(1)
 
     const handleSubmit = (values) => {
-        values['uid'] = (Math.random() * 100)
+
+        values['uid'] = id
         fireStore.collection("Teams").doc(teamName).update({
             qualifications: firebase.firestore.FieldValue.arrayUnion(values)
-        }).then(() => {
+        }).then(() =>{
             props.close()
             form.resetFields();
+      })
+        
+        fireStore.collection("Teams").doc(teamName).get().then((doc) => {
+            Object.entries(doc.data().members).map((item) => {
+                fireStore.collection("Teams").doc(teamName).set({
+                    members: {
+                        [item[0]] : { [id] : {
+                            [values.qualification]: null
+                            }
+                        }
+                    }
+                }, {merge: true})
+            })
         })
     }
 

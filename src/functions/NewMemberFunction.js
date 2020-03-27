@@ -16,8 +16,7 @@ export function NewMemberFunction(values) {
         databaseURL: "https://ledger-app-edfa5.firebaseio.com",
     };
     var secondaryApp = firebase.initializeApp(config, Date.now().toString());
-console.log(email);
-    const promise = secondaryApp.auth().createUserWithEmailAndPassword(email, password).then((newMember) => {
+    const promise = secondaryApp.auth().createUserWithEmailAndPassword(email, password).then( async (newMember) => {
 
         if (newMember) {
             newMember.user.updateProfile({
@@ -25,20 +24,32 @@ console.log(email);
             })
         }
 
-// TODO add uid to uids array in database
-
         let newUid = secondaryApp.auth().currentUser.uid
         secondaryApp.auth().signOut();
-        fireStore.collection("Teams").doc(dbKey).update({
+
+        fireStore.collection("Teams").doc(dbKey).set({
             'uids': firebase.firestore.FieldValue.arrayUnion(newUid)
-            , 'members' : firebase.firestore.FieldValue.arrayUnion({[name] : {
+            , 'members' : {[newUid] : {
                 name: name,
                 uid: newUid,
                 email: email,
-                admin: admin
-            }})
-        });
+                admin: admin,
+            }}
+        }, {merge: true});
         message.success(name + "'s account has been created.")
+
+        fireStore.collection("Teams").doc(dbKey).get().then((doc) => {
+            doc.data().qualifications.map((item) => {
+                fireStore.collection("Teams").doc(dbKey).set({
+                    members: {
+                        [newUid] : { [item.uid] : {
+                            [item.qualification]: null
+                            }
+                        }
+                    }
+                }, {merge: true})
+            })
+        })
     })
     promise.catch(function (e) {
         if (e) {
