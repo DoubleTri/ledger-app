@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
-// import { Link } from 'react-router-dom'
 import { fireStore } from '../../firebase';
-import { Form, Input, Button, Row, Col, Modal } from 'antd';
+import { Button, Row, Col, Modal } from 'antd';
 import { EditOutlined } from '@ant-design/icons'
 
 import { AuthContext } from '../../context/UserContext';
 import NewQualification from './NewQualification';
 import EditQualification from './EditQualification';
 import NewTeamMember from './NewTeamMember';
+import MemberQualEditFrom from '../memberQualEdit/MemberQualEditForm';
 
 const AdminOptions = () => {
 
@@ -37,10 +37,6 @@ const AdminOptions = () => {
         setOpenQualification(false)
     }
 
-    let closeNewTeamMembe = () => {
-        setOpenNewTeamMember(false)
-    }
-
     let editQualification = (item) => {
         setQualItem(item)
         setOpenEditQualification(true)
@@ -50,6 +46,25 @@ const AdminOptions = () => {
         setQualItem(null)
         setOpenEditQualification(false)
     }
+
+// -----------------------------------------------
+
+    let closeNewTeamMembe = () => {
+        setOpenNewTeamMember(false)
+    }
+
+    let editTeamMember = (item) => {
+        setTeamMemberItem(item)
+        setOpenEditTeamMember(true)
+    }
+
+    let closeEditTeamMember = () => {
+        setQualItem(null)
+        setTeamMemberItem(null)
+        setOpenEditTeamMember(false)
+    }
+
+
 
     return ( 
         <div style={{ textAlign: 'left', margin: '5em'}}>
@@ -78,7 +93,7 @@ const AdminOptions = () => {
                     return <li key={k} style={{ margin: '1em' }}>
                         <Row>
                             <Col span={7}>{item.name}</Col>
-                            <Col span={3}><EditOutlined onClick={() => editQualification(item)} /></Col>
+                            <Col span={3}><EditOutlined onClick={() => editTeamMember(item)} /></Col>
                         </Row>
                     </li>
                 })
@@ -119,13 +134,13 @@ const AdminOptions = () => {
             </Modal>
 
             <Modal
-                title="New Team Member"
-                visible={openNewTeamMember}
-                onCancel={closeNewTeamMembe}
+                title="Edit Team Member"
+                visible={openEditTeamMember}
+                onCancel={closeEditTeamMember}
                 footer={null}
                 maskClosable={false}
             >
-                <NewTeamMember close={closeNewTeamMembe} />
+                <MemberQualEditFrom teamName={teamName} member={teamMemberItem} qualArr={qualArr} close={closeEditTeamMember} source={'adminEdit'} />
             </Modal>
 
 {/*--------------------------------------------------------------------- */}

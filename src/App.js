@@ -12,6 +12,8 @@ import './App.css';
 import Header from './components/header/Header';
 import Login from './components/login/Login'
 import Home from './components/home/Home'
+import EditProfile from './components/editProfile/EditProfile';
+import TeamMemberTable from './components/teamMembers/TeamMemberTable'
 import AdminOptions from './components/adminOptions/AdminOptions';
 import FourZeroFour from './components/fourZeroFour/FourZeroFour';
 
@@ -33,6 +35,8 @@ function App() {
                     {loading ? "Loading...." :
                         <Switch >
                             <PrivateRoute exact path="/" component={Home} />
+                            <PrivateRoute exact path="/edit-profile" component={EditProfile} />
+                            <PrivateRoute exact path="/team-members" component={TeamMemberTable} />
                             <NoUserRoute path="/login" component={Login} />
                             <PrivateRoute path="/admin-options" component={AdminOptions} />
                             <Route render={(props) => <FourZeroFour {...props} />} />
