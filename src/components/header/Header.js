@@ -71,6 +71,7 @@ const Header = () => {
                 <p>Some contents...</p>
                 <p><Link onClick={closeDrawer} className='linkText' to='/edit-profile'>Edit Profile</Link></p>
                 <p><Link onClick={closeDrawer} className='linkText' to='/team-members'>Team Members</Link></p>
+                <p><Link onClick={closeDrawer} className='linkText' to='/calender'>Training/Evnets Calender</Link></p>
               
                 {userInfo && userInfo.admin ? <p><Link onClick={closeDrawer} className='linkText' to='/admin-options'>Admin Options</Link></p> : null}
 
