@@ -6,6 +6,7 @@ import { Button, Col, Modal } from 'antd';
 import '../../../node_modules/fullcalendar-reactwrapper/dist/css/fullcalendar.min.css';
 
 import CreateEvent from './CreateEvent';
+import EventModal from './EventModal';
 
 import { AuthContext } from '../../context/UserContext';
 
@@ -23,6 +24,7 @@ const TrainingCalender = () => {
     const [eventData, setEventData] = useState(null)
     const [openEditEventModal, setOpenEditEventModal] = useState(false)
     const [userAttending, setUserAttending] = useState(false)
+    const [attendeeArr, setAttendeeArr] = useState(null)
 
     useEffect(() => {
         if (teamName) {
@@ -49,6 +51,7 @@ const TrainingCalender = () => {
         setISOString(calEvent.start.toISOString());
         setSelectedDay(calEvent.start.format("dddd, MMMM D, YYYY"));
         setOpenEventModal(true)
+        setAttendeeArr(calEvent.attendees)
         calEvent.attendees.forEach((item) => {
             if (item === userInfo.name) {
                 setUserAttending(true)
@@ -71,7 +74,12 @@ const TrainingCalender = () => {
         setSelectedDay(null);
         setEventData(null)
     }
+
     let attending = () => {
+        setUserAttending(true)
+        let tempArr = attendeeArr
+        tempArr.push(userInfo.name);
+        setAttendeeArr(tempArr)
         fireStore.collection("Teams").doc(teamName).get().then((doc) => {
             let eventsArr = doc.data().events
             let eventsIndex = eventsArr.indexOf(eventsArr.find(o => o.uid === eventData.uid))
@@ -83,6 +91,13 @@ const TrainingCalender = () => {
         //closeEventModal()
     }
     let notAttending = () => {
+        setUserAttending(false)
+        var index = attendeeArr.indexOf(userInfo.name);
+        if (index !== -1) {
+            let tempArr = attendeeArr
+            tempArr.splice(index, 1);
+            setAttendeeArr(tempArr)
+        }
         fireStore.collection("Teams").doc(teamName).get().then((doc) => {
             let eventsArr = doc.data().events
             let eventsIndex = eventsArr.indexOf(eventsArr.find(o => o.uid === eventData.uid))
@@ -144,9 +159,7 @@ const TrainingCalender = () => {
                         <div><b>Start Time: </b>{eventData.startTime} <b>End Time: </b>{eventData.endTime}</div>
                         <div><b>Event Info: </b>{eventData.eventInfo}</div>
                         <div><b>Attendees:</b>{userAttending ? ' You are scheduled to attend' : null}
-                            {eventData.attendees.map((attendee, i) => {
-                                return <li style={{ marginLeft: '1em' }} key={i}>{attendee}</li>
-                            })}
+                            <EventModal attendeeArr={attendeeArr} />
                         </div>
   
                         <div>
