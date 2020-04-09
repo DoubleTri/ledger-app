@@ -1,6 +1,7 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link } from "react-router-dom";
-import { Button, Drawer } from 'antd';
+import { fireStore } from '../../firebase';
+import { Button, Drawer, Switch, Col } from 'antd';
 import { MenuUnfoldOutlined } from '@ant-design/icons';
 
 import { AuthContext } from '../../context/UserContext';
@@ -10,6 +11,22 @@ const Header = () => {
     let { logout, userInfo, teamName } = useContext(AuthContext)
 
     const [openDrawer, setOpenDrawer] = useState(false)
+    const [memberAvailable, setMemberAvailable] = useState(false)
+
+    useEffect(() => {
+        if (userInfo) {
+            console.log(userInfo.available)
+            setMemberAvailable(userInfo.available)
+        }
+    }, [userInfo])
+
+    let availbleChange = (e) => {
+        setMemberAvailable(e)
+        let path = 'members.' + userInfo.uid + '.available'
+        fireStore.collection("Teams").doc(teamName).update({
+            [path]: e
+        })
+    }
 
     let closeDrawer = () => {
         setOpenDrawer(false)
@@ -34,23 +51,20 @@ const Header = () => {
     }
 
     return (
-        <div style={phantom}>
+        <div >
 
             <header style={style}>
             
-                {userInfo ? <div style={{ float: 'left'}}><MenuUnfoldOutlined onClick={() => setOpenDrawer(true)} /></div> : null }
+                {userInfo ? <div style={{ float: 'left', width: '10em'}}><MenuUnfoldOutlined onClick={() => setOpenDrawer(true)} /></div> : null }
 
-                <h3>{teamName ? teamName : 'Ledger Responder Software' }
+                <h3><span style={{ textAlign: 'center', position: 'relative' }}>{teamName ? teamName : 'Ledger Responder Software' }</span>
 
                     {userInfo ?
 
-                        <div style={{ float: 'right'}}>
+                        <div style={{ float: 'right', width: '10em'}}>
 
                             <div>{userInfo.name}</div>
-
-                            <Button type="link" onClick={logout}>
-                                Logout
-                            </Button>
+                            <div><Switch checkedChildren="Availble" unCheckedChildren="Not Availble" checked={memberAvailable} onChange={(e) => {availbleChange(e)}} /></div> 
                             
                         </div> 
 
@@ -74,6 +88,10 @@ const Header = () => {
                 <p><Link onClick={closeDrawer} className='linkText' to='/calender'>Training/Evnets Calender</Link></p>
               
                 {userInfo && userInfo.admin ? <p><Link onClick={closeDrawer} className='linkText' to='/admin-options'>Admin Options</Link></p> : null}
+
+                <Button type="link" onClick={logout}>
+                    Logout
+                </Button>
 
             </Drawer>
 

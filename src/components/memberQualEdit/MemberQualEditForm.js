@@ -158,9 +158,9 @@ const MemberQualEditFrom = (props) => {
                             okText="Delete"
                             cancelText="Cancel"
                         >
-                            <Button type="danger" style={{ float: 'right' }}>
+                        {props.source !== 'editPage' ?  <Button type="danger" style={{ float: 'right' }}>
                                 Delete
-                        </Button>
+                        </Button> : null}
                         </Popconfirm>
                         : null}
             </Form.Item>
