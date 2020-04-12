@@ -1,0 +1,8 @@
+
+Finish Edit equipment
+Create task runner in Functions
+Create event roster page
+Create member partcipation page 
+Create RSVP emails with event is created
+Report writing page (with cost recovery)
+Group email page

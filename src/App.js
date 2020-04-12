@@ -15,6 +15,7 @@ import Home from './components/home/Home'
 import EditProfile from './components/editProfile/EditProfile';
 import TeamMemberTable from './components/teamMembers/TeamMemberTable';
 import TrainingCalender from './components/trainingCalender/TrainingClaender';
+import EquipmentLog from './components/equipmentLog/EquipmentLog';
 import AdminOptions from './components/adminOptions/AdminOptions';
 import FourZeroFour from './components/fourZeroFour/FourZeroFour';
 
@@ -39,6 +40,7 @@ function App() {
                             <PrivateRoute exact path="/edit-profile" component={EditProfile} />
                             <PrivateRoute exact path="/team-members" component={TeamMemberTable} />
                             <PrivateRoute exact path="/calender" component={TrainingCalender} />
+                            <PrivateRoute exact path="/equipment-log" component={EquipmentLog} />
                             <NoUserRoute path="/login" component={Login} />
                             <PrivateRoute path="/admin-options" component={AdminOptions} />
                             <Route render={(props) => <FourZeroFour {...props} />} />

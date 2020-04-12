@@ -13,7 +13,7 @@ const TeamMemberTable = () => {
     const [availableFilter, setAvailableFilter] = useState(false)
 
     useEffect(() => {
-        console.log(availableFilter);
+
         if (allData) {
 
             let columnsArr = []
