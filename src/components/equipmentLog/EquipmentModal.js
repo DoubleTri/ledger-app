@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import firebase from 'firebase/app'
 import { fireStore } from '../../firebase';
 import Moment from 'moment';
-import { Button, Input, Radio, Form, DatePicker, Select } from 'antd';
+import { Button, Input, Radio, Form, DatePicker, Select, Popconfirm } from 'antd';
 
 import RandomId from '../../functions/RandomId';
 
@@ -40,22 +40,50 @@ const EquipmentModal = (props) => {
             })
             setMemberArr(tempArr)
         }
-    }, [teamName, allData])
+    }, [teamName, allData, props])
 
     let handleSubmit = (values) => {
-        values['uid'] = id
+
+       
         values['lastCal'] = values.lastCal.format('MMMM Do YYYY');
         values['nextCal'] = values.nextCal.format('MMMM Do YYYY');
-        fireStore.collection("Teams").doc(teamName).update({
-            equipment: firebase.firestore.FieldValue.arrayUnion(values)
-        }).then(() => {
-            props.close()
-            form.resetFields();
-        })
+
+        if (props.equipment) {
+            values['uid'] = props.equipment.uid
+            fireStore.collection("Teams").doc(teamName).get().then((doc) => {
+                let equipmentArr = doc.data().equipment
+                let equipmentIndex = equipmentArr.indexOf(equipmentArr.find(o => o.uid === props.equipment.uid))
+                equipmentArr[equipmentIndex] = values
+                fireStore.collection("Teams").doc(teamName).update({
+                    "equipment": equipmentArr
+                })
+                props.close()
+                form.resetFields();
+            }) 
+        } else {
+            values['uid'] = id
+            fireStore.collection("Teams").doc(teamName).update({
+                equipment: firebase.firestore.FieldValue.arrayUnion(values)
+            }).then(() => {
+                props.close()
+                form.resetFields();
+            })
+        }
+
     }
 
     let onFinishFailed = (errorInfo) => {
         console.log('failed ' + errorInfo);
+    }
+
+    let deleteEquipoment = () => {
+        fireStore.collection("Teams").doc(teamName).get().then((doc) => {
+            fireStore.collection("Teams").doc(teamName).update({
+                equipment: firebase.firestore.FieldValue.arrayRemove(doc.data().equipment.find(x => x.uid === props.equipment.uid))
+            });
+        })
+        props.close()
+        form.resetFields()
     }
 
     return (
@@ -124,7 +152,18 @@ const EquipmentModal = (props) => {
                 <Form.Item >
                     <Button type="primary" htmlType="submit">
                         Submit
-              </Button>
+                    </Button>
+                    {props.equipment ?
+                        <Popconfirm
+                            title={`Are you sure you wabt to delete ${props.equipment.equipment}`}
+                            onConfirm={() => deleteEquipoment()}
+                            okText="Yes"
+                            cancelText="No"
+                        >
+                            <Button style={{ float: 'right' }}>
+                                delete
+                            </Button>
+                        </Popconfirm> : null}
                 </Form.Item>
             </Form>
         </div>

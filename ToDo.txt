@@ -1,8 +1,13 @@
 
-Finish Edit equipment
+DONE!!  Finish Edit equipment
 Create task runner in Functions
-Create event roster page
-Create member partcipation page 
+DONE!! Create event roster page
+DONE!! Create member partcipation page 
 Create RSVP emails with event is created
 Report writing page (with cost recovery)
 Group email page
+
+Alphabatize member tables (partciaption and members tables and roster lists)
+Add emergency contacts to profile 
+Add no double names for members rule 
+Roster Form is used twice in rosters

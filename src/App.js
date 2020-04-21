@@ -15,6 +15,9 @@ import Home from './components/home/Home'
 import EditProfile from './components/editProfile/EditProfile';
 import TeamMemberTable from './components/teamMembers/TeamMemberTable';
 import TrainingCalender from './components/trainingCalender/TrainingClaender';
+import CreateRoster from './components/rosters/CreateRoster';
+import ParticipationTable from './components/participation/ParticipationTable';
+import GroupEmail from './components/groupEmail/GroupEmail';
 import EquipmentLog from './components/equipmentLog/EquipmentLog';
 import AdminOptions from './components/adminOptions/AdminOptions';
 import FourZeroFour from './components/fourZeroFour/FourZeroFour';
@@ -41,6 +44,10 @@ function App() {
                             <PrivateRoute exact path="/team-members" component={TeamMemberTable} />
                             <PrivateRoute exact path="/calender" component={TrainingCalender} />
                             <PrivateRoute exact path="/equipment-log" component={EquipmentLog} />
+                            <PrivateRoute exact path="/rosters" component={CreateRoster} />
+                            <PrivateRoute exact path="/member-participation" component={ParticipationTable} />
+                            <PrivateRoute exact path="/group-email" component={GroupEmail} />
+
                             <NoUserRoute path="/login" component={Login} />
                             <PrivateRoute path="/admin-options" component={AdminOptions} />
                             <Route render={(props) => <FourZeroFour {...props} />} />

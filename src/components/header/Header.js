@@ -63,7 +63,8 @@ const Header = () => {
                         <div style={{ float: 'right', width: '10em'}}>
 
                             <div>{userInfo.name}</div>
-                            <div><Switch checkedChildren="Availble" unCheckedChildren="Not Availble" checked={memberAvailable} onChange={(e) => {availbleChange(e)}} /></div> 
+                            <div><Switch style={{ backgroundColor: memberAvailable ? 'green' : 'lightGray' }} checked={memberAvailable} onChange={(e) => {availbleChange(e)}} />
+                            <span style={{ fontSize: '.75em' , margin: '0.5em'}}>{memberAvailable ? 'available' : 'NOT available'}</span></div> 
                             
                         </div> 
 
@@ -80,12 +81,13 @@ const Header = () => {
                 onClose={closeDrawer}
                 visible={openDrawer}
             >
-                <p>Some contents...</p>
-                <p>Some contents...</p>
                 <p><Link onClick={closeDrawer} className='linkText' to='/edit-profile'>Edit Profile</Link></p>
                 <p><Link onClick={closeDrawer} className='linkText' to='/team-members'>Team Members</Link></p>
                 <p><Link onClick={closeDrawer} className='linkText' to='/equipment-log'>Equipment Log</Link></p>
                 <p><Link onClick={closeDrawer} className='linkText' to='/calender'>Training/Evnets Calender</Link></p>
+                <p><Link onClick={closeDrawer} className='linkText' to='/rosters'>Team Rosters</Link></p>
+                {/* <p><Link onClick={closeDrawer} className='linkText' to='/member-participation'>Member Participation</Link></p> */}
+                <p><Link onClick={closeDrawer} className='linkText' to='/group-email'>Group Email</Link></p>
               
                 {userInfo && userInfo.admin ? <p><Link onClick={closeDrawer} className='linkText' to='/admin-options'>Admin Options</Link></p> : null}
 

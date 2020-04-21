@@ -11,7 +11,7 @@ const {
     }),
     addLessLoader({
       javascriptEnabled: true,
-      modifyVars: { "@primary-color": "#1890ff" }
+      modifyVars: { "@disabled-color": "rgba(0, 0, 0, .65)" }
     })
   );
 /* 

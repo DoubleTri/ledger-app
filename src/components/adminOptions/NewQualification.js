@@ -44,7 +44,7 @@ const NewQualification = (props) => {
         }).then(() =>{
             props.close()
             form.resetFields();
-      })
+        })
         
         fireStore.collection("Teams").doc(teamName).get().then((doc) => {
             Object.entries(doc.data().members).map((item) => {
