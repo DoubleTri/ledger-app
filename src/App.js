@@ -19,6 +19,7 @@ import CreateRoster from './components/rosters/CreateRoster';
 import ParticipationTable from './components/participation/ParticipationTable';
 import GroupEmail from './components/groupEmail/GroupEmail';
 import EquipmentLog from './components/equipmentLog/EquipmentLog';
+import Reports from './components/reportWriting/Reports';
 import AdminOptions from './components/adminOptions/AdminOptions';
 import FourZeroFour from './components/fourZeroFour/FourZeroFour';
 
@@ -47,6 +48,7 @@ function App() {
                             <PrivateRoute exact path="/rosters" component={CreateRoster} />
                             <PrivateRoute exact path="/member-participation" component={ParticipationTable} />
                             <PrivateRoute exact path="/group-email" component={GroupEmail} />
+                            <PrivateRoute exact path="/reports" component={Reports} />
 
                             <NoUserRoute path="/login" component={Login} />
                             <PrivateRoute path="/admin-options" component={AdminOptions} />

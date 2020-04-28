@@ -86,7 +86,7 @@ const Header = () => {
                 <p><Link onClick={closeDrawer} className='linkText' to='/equipment-log'>Equipment Log</Link></p>
                 <p><Link onClick={closeDrawer} className='linkText' to='/calender'>Training/Evnets Calender</Link></p>
                 <p><Link onClick={closeDrawer} className='linkText' to='/rosters'>Team Rosters</Link></p>
-                {/* <p><Link onClick={closeDrawer} className='linkText' to='/member-participation'>Member Participation</Link></p> */}
+                <p><Link onClick={closeDrawer} className='linkText' to='/reports'>Reports</Link></p>
                 <p><Link onClick={closeDrawer} className='linkText' to='/group-email'>Group Email</Link></p>
               
                 {userInfo && userInfo.admin ? <p><Link onClick={closeDrawer} className='linkText' to='/admin-options'>Admin Options</Link></p> : null}

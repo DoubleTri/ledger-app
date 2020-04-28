@@ -10,6 +10,7 @@ import EditQualification from './EditQualification';
 import NewTeamMember from './NewTeamMember';
 import MemberQualEditFrom from '../memberQualEdit/MemberQualEditForm';
 import NewEmailGroupComponent from './NewEmailGroupComponent';
+import NewApparatus from './NewApparatus';
 
 const { Search } = Input;
 
@@ -37,6 +38,11 @@ const AdminOptions = () => {
     const [emailGroupToEdit, setEmailGroupToEdit] = useState(null)
     const [editEmailGroupModal, setEditEmailGroupModal] = useState(false)
 
+    const [apparatus, setApparatus] = useState(null)
+    const [apparatusModal, setApparatusModal] = useState(false)
+    const [apparatusToEdit, setApparatusToEdit] = useState(null)
+    const [editApparatusModal, setEditApparatusModal] = useState(false)
+
     let { teamName } = useContext(AuthContext)
 
     useEffect(() => {
@@ -46,6 +52,7 @@ const AdminOptions = () => {
             setTeamMemberArr(Object.values(doc.data().members))
             setRosterTypes(doc.data().rosterTypes)
             setEmailGroups(doc.data().emailGroups)
+            setApparatus(doc.data().apparatus)
         })
     }
     }, [teamName])
@@ -147,6 +154,20 @@ const AdminOptions = () => {
         setEmailGroupToEdit(null);
     }
 
+    // -----------------------------------------------
+
+    let closeApparatusModal = () => {
+        setApparatusModal(false)
+    }
+    let editApparatus = (item) => {
+        setApparatusToEdit(item);
+        setEditApparatusModal(true)
+    }
+    let closeEditApparatus = () => {
+        setEditApparatusModal(false)
+        setApparatusToEdit(null);
+    }
+
     return ( 
         <div style={{ textAlign: 'left', margin: '5em'}}>
 
@@ -216,8 +237,8 @@ const AdminOptions = () => {
                         </div>
                         : 
                         <Row>
-                            <Col span={1}>{item.shown ? <FundViewOutlined /> : null}</Col> 
-                            <Col span={7}>{item.type}</Col>
+                            <Col span={4}>{item.type}</Col>
+                            <Col span={3}>{item.shown ? <FundViewOutlined /> : null}</Col> 
                             <Col span={3}><EditOutlined onClick={() => editType(item)} /></Col>
                         </Row>
                     }
@@ -241,9 +262,23 @@ const AdminOptions = () => {
                     </li>
                 })
             : null }
-            
 
+            <br />
+            <hr />
+            <br />
 
+            <h3>Apparatus</h3>
+            <Button onClick={() => setApparatusModal(true)}>Create New Apparatus</Button>
+            {apparatus ?
+                apparatus.map((item, k) => {
+                    return <li key={k} style={{ margin: '1em' }}>
+                        <Row>
+                            <Col span={7}>{item.name}</Col>
+                            <Col span={3}><EditOutlined onClick={() => editApparatus(item)} /></Col>
+                        </Row>
+                    </li>
+                })
+                : null}
 
 {/*--------------------------------------------------------------------- */}
 
@@ -308,7 +343,29 @@ const AdminOptions = () => {
                 footer={null}
                 maskClosable={false}
             >
-                <NewEmailGroupComponent allMembers={teamMemberArr} emailGroupToEdit={emailGroupToEdit} close={closeEditEmailGroup}/>
+                <NewEmailGroupComponent allMembers={teamMemberArr} emailGroupToEdit={emailGroupToEdit} close={closeEditEmailGroup} />
+            </Modal> 
+
+{/*--------------------------------------------------------------------- */}
+
+<Modal
+                title="New Apparatus"
+                visible={apparatusModal}
+                onCancel={closeApparatusModal}
+                footer={null}
+                maskClosable={false}
+            >
+                <NewApparatus close={closeApparatusModal}/>
+            </Modal>
+
+            <Modal
+                title="Edit Apparatus"
+                visible={editApparatusModal}
+                onCancel={closeEditApparatus}
+                footer={null}
+                maskClosable={false}
+            >
+                <NewApparatus apparatusToEdit={apparatusToEdit} close={closeEditApparatus} />
             </Modal> 
 
 {/*--------------------------------------------------------------------- */}
