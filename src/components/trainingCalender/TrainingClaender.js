@@ -10,7 +10,7 @@ import EventModal from './EventModal';
 
 import { AuthContext } from '../../context/UserContext';
 
-const TrainingCalender = () => {
+const TrainingCalender = (props) => {
 
     let { teamName, userInfo } = useContext(AuthContext)
 
@@ -111,11 +111,12 @@ const TrainingCalender = () => {
 
     return (
         <div>
-            <h2>Training Calender Page</h2>
+            {!props.homePage ? <h2>Events Calender</h2> : null }
             <div>
                 <Col xs={{ span: 20, offset: 2 }} lg={{ span: 18, offset: 3 }} style={{ marginTop: '5em', marginBottom: '5em' }} >
                     <FullCalendar
                         id="calendar"
+                        defaultView={props.homePage ? 'listYear' : 'month'} 
                         header={{
                             left: 'prev,next today myCustomButton',
                             center: 'title',
@@ -125,7 +126,7 @@ const TrainingCalender = () => {
                         navLinks={true} // can click day/week names to navigate views
                         editable={false}
                         displayEventTime={false}
-                        dayClick={userInfo && userInfo.admin ? (date) => clickedDay(date) : null}
+                        dayClick={userInfo && userInfo.admin && !props.homePage ? (date) => clickedDay(date) : null}
                         eventClick={(calEvent) => clickedEvent(calEvent)}
                         eventLimit={true} // allow "more" link when too many events
                         events={events}
@@ -159,12 +160,12 @@ const TrainingCalender = () => {
                         <div><b>Start Time: </b>{eventData.startTime} <b>End Time: </b>{eventData.endTime}</div>
                         <div><b>Event Info: </b>{eventData.eventInfo}</div>
                         <div><b>Attendees:</b>{userAttending ? ' You are scheduled to attend' : null}
-                            <EventModal attendeeArr={attendeeArr} />
+                            <EventModal attendeeArr={attendeeArr} homePage={props.homePage}/>
                         </div>
   
                         <div>
                             <Button onClick={closeEventModal}>Close</Button>
-                            {userInfo.admin ? <Button onClick={editEvent}>Edit</Button> : null}
+                            {userInfo.admin && !props.homePage ? <Button onClick={editEvent}>Edit</Button> : null}
                             {userAttending ? <Button onClick={() => notAttending()}>I am NOT attending</Button> : <Button onClick={() => attending()}>I am attending</Button> }
                         </div>
                         </Modal>

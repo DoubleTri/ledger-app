@@ -131,7 +131,7 @@ const TeamMemberTable = () => {
 
     return (
         <div style={{ margin: '2em' }}>
-            <h2>TeamMemberTable Page</h2>
+            <h2>Team Member Page</h2>
             <br />
             <div onClick={() => changeAvailableFilter()} >{availableFilter ? 'Show all members' : 'Only show available members' }</div>
             {columns && data ?  <Table columns={columns} dataSource={data} pagination={false} /> : null}

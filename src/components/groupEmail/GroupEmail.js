@@ -58,7 +58,6 @@ const GroupEmail = () => {
             emailObj['text'] = text
             emailObj['from'] = userInfo.name
             emailObj['recipeants'] = emailArr
-            console.log(emailObj);
         } 
     }
 

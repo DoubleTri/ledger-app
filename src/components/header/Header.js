@@ -81,6 +81,7 @@ const Header = () => {
                 onClose={closeDrawer}
                 visible={openDrawer}
             >
+                <p><Link onClick={closeDrawer} className='linkText' to='/'>Home</Link></p>
                 <p><Link onClick={closeDrawer} className='linkText' to='/edit-profile'>Edit Profile</Link></p>
                 <p><Link onClick={closeDrawer} className='linkText' to='/team-members'>Team Members</Link></p>
                 <p><Link onClick={closeDrawer} className='linkText' to='/equipment-log'>Equipment Log</Link></p>

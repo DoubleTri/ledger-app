@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Button, Form, DatePicker, TimePicker, Input, Checkbox, Select, message } from 'antd';
+import moment from 'moment';
 
 import { AuthContext } from '../../context/UserContext';
 const { TextArea } = Input;
@@ -11,6 +12,10 @@ const Reports = () => {
 
     const [allMembers, setAllMembers] = useState(null)
     const [allApparatus, setAllApparatus] = useState(null)
+
+    const [startTime, setStartTime] = useState(null)
+    const [endTime, setEndTime] = useState(null)
+    const [costRecoveryTotal, setCostRecoveryTotal] = useState(0)
 
     useEffect(() => {
         if (userInfo) {
@@ -40,6 +45,19 @@ const Reports = () => {
 
     const onFinishFailed = (errorInfo) => {
         console.log(errorInfo);
+    }
+
+    let costRecoveryCal = (item, checked) => {
+        let total = 0
+        if (checked && item.initialCost) {
+            total = item.initialCost
+        }
+        if (checked && item.hourlyCost) {
+            let start = moment(endTime)
+            let end = moment(startTime) 
+            total = total + ((moment.duration(start.format("HH:mm")).asMinutes()) - (moment.duration(end.format("HH:mm")).asMinutes())) * (item.hourlyCost/60)
+        }
+        setCostRecoveryTotal(total)
     }
 
     return (
@@ -101,7 +119,7 @@ const Reports = () => {
                     rules={[{ required: true, message: 'Please input team activation time' }]}
                 >
                     <TimePicker
-                        onChange={(e) => console.log(e)}
+                        onChange={(e) => setStartTime(e)}
                     />
                 </Form.Item>
 
@@ -113,7 +131,17 @@ const Reports = () => {
                     <TimePicker
                         onChange={(e) => console.log(e)}
                     />
-            </Form.Item>
+                </Form.Item>
+
+                <Form.Item
+                    label="In Service Time"
+                    name="clearTime"
+                    rules={[{ required: true, message: 'Please input in service time' }]}
+                >
+                    <TimePicker
+                        onChange={(e) => setEndTime(e)}
+                    />
+                </Form.Item>
 
                 <Form.Item
                     label="Requesting Agency"
@@ -226,7 +254,7 @@ const Reports = () => {
                     >
                         <Checkbox.Group >
                             {allApparatus.map((apparati, i) => {
-                                return <div key={i}><Checkbox value={apparati.name}>
+                                return <div key={i}><Checkbox value={apparati.name} onChange={(e) => costRecoveryCal(apparati, e.target.checked)}>
                                     {apparati.name}
                                 </Checkbox>
                                 </div>
@@ -239,6 +267,8 @@ const Reports = () => {
           <Button htmlType="submit">Next</Button>
 
         </Form>
+        <br />
+        <b>Total Cost Recovery: </b> {costRecoveryTotal}
         </div>
     );
 };
