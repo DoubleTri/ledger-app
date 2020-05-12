@@ -69,7 +69,7 @@ const TeamMemberTable = () => {
                 let dataArrObj = {}
                 dataArrObj.key = member.name
                 dataArrObj.name = <div onClick={() => console.log(member.name, ' clicked')}>
-                        <span style={{ margin: '.2em' }}>{member.available ? <CheckCircleTwoTone twoToneColor="#52c41a" /> : <CloseOutlined /> }</span><b>{member.name}</b>
+                        <span style={{ margin: '.2em' }}>{member.available ? <CheckCircleTwoTone twoToneColor="#52c41a" /> : <span><CloseOutlined /> {member.availableDate}</span> }</span><b>{member.name}</b>
                     </div>
 
                 Object.entries(member).map((item) => {

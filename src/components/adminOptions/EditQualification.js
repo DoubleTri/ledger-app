@@ -98,7 +98,6 @@ const NewQualification = (props) => {
                     }
                 })
             })
-
         })
     }
 

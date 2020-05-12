@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link } from "react-router-dom";
+import moment from 'moment';
 import { fireStore } from '../../firebase';
-import { Button, Drawer, Switch, Col } from 'antd';
+import firebase from 'firebase/app'
+import { Button, Drawer, Switch, Col, Modal, DatePicker } from 'antd';
 import { MenuUnfoldOutlined } from '@ant-design/icons';
 
 import { AuthContext } from '../../context/UserContext';
@@ -12,6 +14,8 @@ const Header = () => {
 
     const [openDrawer, setOpenDrawer] = useState(false)
     const [memberAvailable, setMemberAvailable] = useState(false)
+    const [availableModal, setAvailbleModal] = useState(false)
+    const [date, setDate] = useState(null)
 
     useEffect(() => {
         if (userInfo) {
@@ -24,11 +28,30 @@ const Header = () => {
         let path = 'members.' + userInfo.uid + '.available'
         fireStore.collection("Teams").doc(teamName).update({
             [path]: e
+        }).then(() => {
+            let path = 'members.' + userInfo.uid + '.availableDate'
+            fireStore.collection("Teams").doc(teamName).update({
+                [path]: firebase.firestore.FieldValue.delete()
+            })
         })
+        if (!e) {
+            setAvailbleModal(true)
+        }
     }
 
     let closeDrawer = () => {
         setOpenDrawer(false)
+    }
+
+    let closeAvailableModal = () => {
+        setAvailbleModal(false)
+    }
+
+    let submitDate = () => {
+        let path = 'members.' + userInfo.uid + '.availableDate'
+        fireStore.collection("Teams").doc(teamName).update({
+            [path]: date
+        })
     }
 
 //TODO move all this styling to css file
@@ -63,7 +86,7 @@ const Header = () => {
                         <div style={{ float: 'right', width: '10em'}}>
 
                             <div>{userInfo.name}</div>
-                            <div><Switch style={{ backgroundColor: memberAvailable ? 'green' : 'lightGray' }} checked={memberAvailable} onChange={(e) => {availbleChange(e)}} />
+                            <div><Switch style={{ backgroundColor: memberAvailable ? 'green' : 'lightGray' }} checked={memberAvailable} onChange={(e) => availbleChange(e)} />
                             <span style={{ fontSize: '.75em' , margin: '0.5em'}}>{memberAvailable ? 'available' : 'NOT available'}</span></div> 
                             
                         </div> 
@@ -97,6 +120,22 @@ const Header = () => {
                 </Button>
 
             </Drawer>
+
+            <Modal
+                title="New Email Group"
+                visible={availableModal}
+                onCancel={closeAvailableModal}
+                footer={null}
+                maskClosable={false}
+            >
+                <p>When will you be available again?</p> 
+                <DatePicker placeholder="Select Next Week Ending" format="YYYY-MM-DD HH:mm:ss" showTime={{ defaultValue: moment('00:00', 'HH:mm') }} onChange={(e) => setDate(moment(e).format("MM-DD-YYYY HH:mm"))} />
+                <br />
+                <div>
+                    <span style={{ float: 'left' }}><Button onClick={submitDate}>Submit Return Date/Time</Button></span>
+                    <span style={{ float: 'right' }}><Button>Skip</Button></span>
+                </div>
+            </Modal>
 
         </div>
     )

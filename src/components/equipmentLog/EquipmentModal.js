@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import firebase from 'firebase/app'
 import { fireStore } from '../../firebase';
 import Moment from 'moment';
-import { Button, Input, Radio, Form, DatePicker, Select, Popconfirm } from 'antd';
+import { Button, Input, Radio, Form, InputNumber, DatePicker, Select, Popconfirm } from 'antd';
 
 import RandomId from '../../functions/RandomId';
 
@@ -19,6 +19,7 @@ const EquipmentModal = (props) => {
     let { teamName, allData } = useContext(AuthContext)
 
     const [memberArr, setMemberArr] = useState(null)
+    const [catagoryArr, setCatagoryArr] = useState(null)
 
     let id = RandomId(len, pattern);
 
@@ -26,15 +27,20 @@ const EquipmentModal = (props) => {
         if (props.equipment) {
             form.setFieldsValue({
                 equipment: props.equipment.equipment,
-                id: props.equipment.id,
-                location: props.equipment.location,
-                lastCal: Moment(props.equipment.lastCal, 'MMMM Do YYYY'),
-                nextCal: Moment(props.equipment.nextCal, 'MMMM Do YYYY'),
-                contact: props.equipment.contact,
+                category: props.equipment.category ? props.equipment.category : null,
+                id: props.equipment.id ? props.equipment.id : null,
+                location: props.equipment.location ? props.equipment.location : null,
+                lastCal: props.equipment.lastCal ? Moment(props.equipment.lastCal, 'MMMM Do YYYY') : null,
+                nextCal: props.equipment.nextCal ? Moment(props.equipment.nextCal, 'MMMM Do YYYY') : null,
+                initialCost: props.equipment.initialCost ? props.equipment.initialCost : null, 
+                hourlyCost: props.equipment.hourlyCost ? props.equipment.hourlyCost : null, 
+                contact: props.equipment.contact ? props.equipment.contact : null,
+                purchase: props.equipment.purchase ? Moment(props.equipment.purchase, 'MMMM Do YYYY') : null,
             })
         }
         if (allData) {
             let tempArr = []
+            setCatagoryArr(allData.equipmentCategories)
             Object.values(allData.members).map((member) => {
                 tempArr.push(member)
             })
@@ -44,9 +50,19 @@ const EquipmentModal = (props) => {
 
     let handleSubmit = (values) => {
 
-       
-        values['lastCal'] = values.lastCal.format('MMMM Do YYYY');
-        values['nextCal'] = values.nextCal.format('MMMM Do YYYY');
+        console.log(values);
+
+        values['id'] = values.id ? values.id : null
+        values['location'] = values.location ? values.location : null
+        values['category'] = values.category ? values.category : null
+
+        values['initialCost'] = values.initialCost ? values.initialCost : null
+        values['hourlyCost'] = values.hourlyCost ? values.hourlyCost : null
+        values['contact'] = values.contact ? values.contact : null
+
+        values['lastCal'] = values.lastCal ? values.lastCal.format('MMMM Do YYYY') : null
+        values['nextCal'] = values.nextCal ? values.nextCal.format('MMMM Do YYYY') : null
+        values['purchase'] = values.purchase ? values.purchase.format('MMMM Do YYYY') : null
 
         if (props.equipment) {
             values['uid'] = props.equipment.uid
@@ -103,6 +119,20 @@ const EquipmentModal = (props) => {
                     <Input />
                 </Form.Item>
 
+                {catagoryArr && catagoryArr.length > 0 ?
+                    <Form.Item
+                        label="Equipment Category"
+                        name="category"
+                        rules={[{ required: false }]}
+                    >
+                        <Select>
+                            {catagoryArr.map((item, k) => {
+                                return <Select.Option key={k} value={item.category}>{item.category}</Select.Option>
+                            })
+                            }
+                        </Select>
+                    </Form.Item> : null} 
+
                 <Form.Item
                     label="Equipment ID"
                     name="id"
@@ -133,6 +163,22 @@ const EquipmentModal = (props) => {
                     <DatePicker style={{ width: '100%' }} />
                 </Form.Item>
 
+                <Form.Item
+                    label="Initial Cost"
+                    name="initialCost"
+                    rules={[{ required: false }]}
+                >
+                    <InputNumber />
+                </Form.Item>
+
+                <Form.Item
+                    label="Hourly Cost"
+                    name="hourlyCost"
+                    rules={[{ required: false }]}
+                >
+                    <InputNumber />
+                </Form.Item>
+
                 {memberArr ?
                     <Form.Item
                         label="Team Member Contact"
@@ -148,6 +194,13 @@ const EquipmentModal = (props) => {
 
                     </Form.Item>
                     : 'no team members'}
+
+                <Form.Item
+                    label="Date of Purchase"
+                    name="purchase"
+                >
+                    <DatePicker style={{ width: '100%' }} />
+                </Form.Item>
 
                 <Form.Item >
                     <Button type="primary" htmlType="submit">

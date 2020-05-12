@@ -280,6 +280,23 @@ const AdminOptions = () => {
                 })
                 : null}
 
+            {/* <br />
+            <hr />
+            <br /> */}
+            
+            {/* <h3>Cost Recovery</h3>
+            <Button onClick={() => setOpenQualification(true)}>Create New Cost Recovery Item</Button>
+            {qualArr ?
+                qualArr.map((item, k) => {
+                    return <li key={k} style={{ margin: '1em' }}>
+                        <Row>
+                            <Col span={7}>{item.qualification}</Col>
+                            <Col span={3}><EditOutlined onClick={() => editQualification(item)} /></Col>
+                        </Row>
+                    </li>
+                })
+            : null } */}
+
 {/*--------------------------------------------------------------------- */}
 
             <Modal
